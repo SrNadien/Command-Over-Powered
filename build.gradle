@@ -115,3 +115,10 @@ idea {
         downloadJavadoc = true
     }
 }
+
+
+jar {
+    outputs.upToDateWhen { false }
+}
+
+build.dependsOn jar
