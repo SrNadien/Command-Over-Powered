@@ -1,0 +1,31 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="All Rights Reserved"
+issueTrackerURL="https://github.com/yourusername/cmdop/issues"
+
+[[mods]]
+modId="${mod_id}" 
+version="${mod_version}" 
+displayName="${mod_name}"
+displayURL="https://github.com/SrNadien"
+logoFile="logo.png" 
+credits="${mod_author}" 
+authors="${mod_author}"
+description='''
+Mod de comandos esenciales para servidores de Minecraft.
+Incluye comandos como /fly, /vanish, /home, /tpa y mucho más.
+'''
+
+[[dependencies.${mod_id}]]
+    modId="neoforge"
+    type="required"
+    versionRange="${neo_version}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    type="required"
+    versionRange="${minecraft_version}"
+    ordering="NONE"
+    side="BOTH"
