@@ -19,7 +19,7 @@ public class SizeCommand {
         dispatcher.register(Commands.literal("size")
             .requires(source -> source.hasPermission(2))
             .then(Commands.argument("player", EntityArgument.player())
-                .then(Commands.argument("scale", DoubleArgumentType.doubleArg(0.0625, 16.0))
+                .then(Commands.argument("scale", DoubleArgumentType.doubleArg(0.0625))
                     .executes(SizeCommand::changeSize))));
     }
     
@@ -32,6 +32,14 @@ public class SizeCommand {
         try {
             ServerPlayer target = EntityArgument.getPlayer(ctx, "player");
             double scale = DoubleArgumentType.getDouble(ctx, "scale");
+            
+            int configMax = cmdopConfig.SIZE_MAX_SCALE.get();
+            
+            
+            if (scale > configMax) {
+                ctx.getSource().sendFailure(Component.literal("§cEl tamaño máximo permitido es " + configMax + "."));
+                return 0;
+            }
             
             Holder<Attribute> scaleAttr = Attributes.SCALE;
             AttributeInstance instance = target.getAttribute(scaleAttr);

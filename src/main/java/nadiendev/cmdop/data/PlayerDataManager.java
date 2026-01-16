@@ -12,6 +12,15 @@ public class PlayerDataManager {
         return playerData.computeIfAbsent(uuid, k -> new PlayerData());
     }
     
+    public static void saveData() {
+        // Aquí podrías implementar guardado persistente si lo necesitas
+        // Por ahora los datos se mantienen en memoria durante la sesión del servidor
+    }
+    
+    public static void clearData(UUID uuid) {
+        playerData.remove(uuid);
+    }
+    
     public static class PlayerData {
         private boolean flying = false;
         private boolean vanished = false;
@@ -41,8 +50,13 @@ public class PlayerDataManager {
         public void setNickname(String nickname) { this.nickname = nickname; }
         
         public Map<String, HomeData> getHomes() { return homes; }
+        
         public void addHome(String name, BlockPos pos, String dimension) {
             homes.put(name, new HomeData(pos, dimension));
+        }
+        
+        public void removeHome(String name) {
+            homes.remove(name);
         }
         
         public long getLastHomeUse() { return lastHomeUse; }

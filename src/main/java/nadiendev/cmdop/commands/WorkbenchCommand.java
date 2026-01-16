@@ -1,18 +1,20 @@
 package nadiendev.cmdop.commands;
 
 import nadiendev.cmdop.config.cmdopConfig;
+import nadiendev.cmdop.util.DummyCraftingMenu;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.CraftingMenu;
 
 public class WorkbenchCommand {
+    
+    private static final Component WORKBENCH_TITLE = Component.translatable("container.crafting");
+    
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("wb")
             .executes(WorkbenchCommand::openWorkbench));
@@ -34,9 +36,9 @@ public class WorkbenchCommand {
         if (player == null) return 0;
         
         player.openMenu(new SimpleMenuProvider(
-            (id, inv, p) -> new CraftingMenu(id, inv, 
-                ContainerLevelAccess.create(player.level(), player.blockPosition())),
-            Component.translatable("container.crafting")));
+            (id, inventory, p) -> new DummyCraftingMenu(id, inventory, 
+                ContainerLevelAccess.create(player.level(), player.blockPosition())), 
+            WORKBENCH_TITLE));
         
         return 1;
     }

@@ -14,8 +14,8 @@ public class MoreCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("more")
             .requires(source -> source.hasPermission(2))
-            .executes(ctx -> fillStack(ctx, 64))
-            .then(Commands.argument("amount", IntegerArgumentType.integer(1, 100))
+            .executes(ctx -> fillStack(ctx, -1))
+            .then(Commands.argument("amount", IntegerArgumentType.integer(1))
                 .executes(ctx -> fillStack(ctx, IntegerArgumentType.getInteger(ctx, "amount")))));
     }
     
@@ -35,10 +35,24 @@ public class MoreCommand {
             return 0;
         }
         
-        int maxStack = Math.min(held.getMaxStackSize(), amount);
-        held.setCount(maxStack);
+        int configMax = cmdopConfig.MORE_MAX_STACK.get();
         
-        player.sendSystemMessage(Component.literal("§aÍtem rellenado a " + maxStack + "."));
+    
+        if (amount == -1) {
+            amount = configMax;
+        }
+        
+       
+        if (amount > configMax) {
+            player.sendSystemMessage(Component.literal("§cLa cantidad máxima permitida es " + configMax + "."));
+            return 0;
+        }
+        
+       
+        int finalAmount = Math.min(held.getMaxStackSize(), amount);
+        held.setCount(finalAmount);
+        
+        player.sendSystemMessage(Component.literal("§aÍtem rellenado a " + finalAmount + "."));
         
         return 1;
     }

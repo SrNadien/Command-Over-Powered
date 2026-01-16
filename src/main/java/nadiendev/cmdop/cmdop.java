@@ -29,6 +29,7 @@ public class cmdop {
         FlyCommand.register(event.getDispatcher());
         VanishCommand.register(event.getDispatcher());
         SetHomeCommand.register(event.getDispatcher());
+        DelHomeCommand.register(event.getDispatcher());
         HomeCommand.register(event.getDispatcher());
         GamemodeCommand.register(event.getDispatcher());
         TpaCommand.register(event.getDispatcher());
@@ -47,5 +48,8 @@ public class cmdop {
         SizeCommand.register(event.getDispatcher());
         SpeedCommand.register(event.getDispatcher());
         SayFormatCommand.register(event.getDispatcher());
+        HealCommand.register(event.getDispatcher());
+        FeedCommand.register(event.getDispatcher());
+        SudoCommand.register(event.getDispatcher());
     }
 }

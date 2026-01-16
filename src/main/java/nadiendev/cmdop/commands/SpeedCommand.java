@@ -12,7 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 
 public class SpeedCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        // /speed <velocidad> [jugador]
+  
         dispatcher.register(Commands.literal("speed")
             .requires(source -> source.hasPermission(2))
             .then(Commands.argument("speed", FloatArgumentType.floatArg(0, 10))
@@ -21,7 +21,7 @@ public class SpeedCommand {
                     .executes(ctx -> setSpeed(ctx, FloatArgumentType.getFloat(ctx, "speed"), 
                         EntityArgument.getPlayer(ctx, "player"), true)))));
         
-        // /flyspeed <velocidad> [jugador]
+       
         dispatcher.register(Commands.literal("flyspeed")
             .requires(source -> source.hasPermission(2))
             .then(Commands.argument("speed", FloatArgumentType.floatArg(0, 10))
@@ -30,7 +30,7 @@ public class SpeedCommand {
                     .executes(ctx -> setSpeed(ctx, FloatArgumentType.getFloat(ctx, "speed"), 
                         EntityArgument.getPlayer(ctx, "player"), true)))));
         
-        // /walkspeed <velocidad> [jugador]
+       
         dispatcher.register(Commands.literal("walkspeed")
             .requires(source -> source.hasPermission(2))
             .then(Commands.argument("speed", FloatArgumentType.floatArg(0, 10))
@@ -49,9 +49,7 @@ public class SpeedCommand {
         ServerPlayer player = target != null ? target : ctx.getSource().getPlayer();
         if (player == null) return 0;
         
-        // Convertir de 0-10 a escala de Minecraft (0-1 para walk, 0-0.5 para fly)
-        // Velocidad normal: walk=0.1, fly=0.05
-        // Velocidad máxima segura: walk=1.0, fly=0.5
+        
         
         if (isFlySpeed) {
             float flySpeed = speed * 0.05f; // 1 = normal, 10 = muy rápido
