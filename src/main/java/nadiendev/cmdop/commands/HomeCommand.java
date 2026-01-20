@@ -16,14 +16,15 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 
 public class HomeCommand {
+    
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("home")
             .executes(ctx -> teleportHome(ctx, "home"))
-            .then(Commands.argument("name", StringArgumentType.word())
+            .then(Commands.argument("name", StringArgumentType.string())
                 .executes(ctx -> teleportHome(ctx, StringArgumentType.getString(ctx, "name")))));
     }
     
-    private static int teleportHome(CommandContext<CommandSourceStack> ctx, String name) {
+    private static int teleportHome(CommandContext<CommandSourceStack> ctx, String homeName) {
         if (!cmdopConfig.ENABLE_HOME.get()) {
             ctx.getSource().sendFailure(Component.literal("§cEl comando /home está deshabilitado."));
             return 0;
@@ -34,38 +35,45 @@ public class HomeCommand {
         
         PlayerDataManager.PlayerData data = PlayerDataManager.getData(player.getUUID());
         
-        long cooldown = cmdopConfig.HOME_COOLDOWN.get() * 1000L;
-        long timeSince = System.currentTimeMillis() - data.getLastHomeUse();
-        if (cooldown > 0 && timeSince < cooldown && !player.hasPermissions(2)) {
-            long remaining = (cooldown - timeSince) / 1000;
-            player.sendSystemMessage(Component.literal("§cDebes esperar " + remaining + " segundos."));
+        // Verificar cooldown
+        long currentTime = System.currentTimeMillis();
+        long lastUse = data.getLastHomeUse();
+        int cooldown = cmdopConfig.HOME_COOLDOWN.get() * 1000;
+        
+        if (currentTime - lastUse < cooldown && !player.hasPermissions(4)) {
+            long remaining = (cooldown - (currentTime - lastUse)) / 1000;
+            player.sendSystemMessage(Component.literal("§cDebes esperar " + remaining + " segundos para usar /home de nuevo."));
             return 0;
         }
         
-        if (name.equals("home") && data.getHomes().size() == 1) {
-            name = data.getHomes().keySet().iterator().next();
-        }
-        
-        PlayerDataManager.HomeData home = data.getHomes().get(name);
-        if (home == null) {
-            player.sendSystemMessage(Component.literal("§cHogar '" + name + "' no encontrado."));
+        if (!data.hasHome(homeName)) {
+            player.sendSystemMessage(Component.literal("§cNo tienes un home llamado '" + homeName + "'."));
             return 0;
         }
         
-        ResourceKey<Level> dimension = ResourceKey.create(
+        PlayerDataManager.HomeData homeData = data.getHomes().get(homeName);
+        BlockPos pos = homeData.getPosition();
+        String dimension = homeData.getDimension();
+        
+        ResourceKey<Level> dimensionKey = ResourceKey.create(
             net.minecraft.core.registries.Registries.DIMENSION,
-            ResourceLocation.parse(home.getDimension()));
-        ServerLevel level = player.getServer().getLevel(dimension);
+            ResourceLocation.parse(dimension));
+        ServerLevel level = player.getServer().getLevel(dimensionKey);
         
         if (level == null) {
             player.sendSystemMessage(Component.literal("§cDimensión no encontrada."));
             return 0;
         }
         
-        BlockPos pos = home.getPosition();
-        player.teleportTo(level, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, player.getYRot(), player.getXRot());
-        player.sendSystemMessage(Component.literal("§aTeletransportado a '" + name + "'."));
-        data.setLastHomeUse(System.currentTimeMillis());
+        // Guardar ubicación anterior antes de teletransportar
+        BackCommand.savePreviousLocation(player);
+        
+        player.teleportTo(level, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 
+            player.getYRot(), player.getXRot());
+        player.sendSystemMessage(Component.literal("§aTeletransportado a '" + homeName + "'."));
+        
+        data.setLastHomeUse(currentTime);
+        PlayerDataManager.savePlayerData(player.getUUID());
         
         return 1;
     }

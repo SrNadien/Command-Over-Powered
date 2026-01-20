@@ -2,6 +2,7 @@ package nadiendev.cmdop.event;
 
 import nadiendev.cmdop.config.cmdopConfig;
 import nadiendev.cmdop.data.PlayerDataManager;
+import nadiendev.cmdop.commands.NickCommand;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -16,14 +17,15 @@ public class ChatFormatHandler {
         
         String format = cmdopConfig.CHAT_FORMAT.get();
         
-        PlayerDataManager.PlayerData data = PlayerDataManager.getData(player.getUUID());
-        String displayName = data.getNickname() != null ? data.getNickname() : player.getName().getString();
+        // Obtener el nickname desde NickCommand (no desde PlayerDataManager)
+        String displayName = NickCommand.getDisplayName(player);
+        String nickname = NickCommand.getNickname(player.getUUID());
         
         String formatted = format
             .replace("{MESSAGE}", message)
             .replace("{USERNAME}", player.getName().getString())
             .replace("{DISPLAYNAME}", displayName)
-            .replace("{NICKNAME}", data.getNickname() != null ? data.getNickname() : player.getName().getString())
+            .replace("{NICKNAME}", nickname != null ? nickname.replace("&", "§") : player.getName().getString())
             .replace("{PREFIX}", "")
             .replace("{SUFFIX}", "")
             .replace("{GROUP}", "")

@@ -16,6 +16,8 @@ Mod de comandos esenciales para servidores de Minecraft.
 Incluye comandos como /fly, /vanish, /home, /tpa y mucho más.
 '''
 
+
+
 [[dependencies.${mod_id}]]
     modId="neoforge"
     type="required"

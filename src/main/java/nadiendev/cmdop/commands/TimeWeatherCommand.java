@@ -21,6 +21,10 @@ public class TimeWeatherCommand {
         dispatcher.register(Commands.literal("sun")
             .requires(source -> source.hasPermission(2))
             .executes(TimeWeatherCommand::clearWeather));
+        
+        dispatcher.register(Commands.literal("rain")
+            .requires(source -> source.hasPermission(2))
+            .executes(TimeWeatherCommand::setRain));
     }
     
     private static int setDay(CommandContext<CommandSourceStack> ctx) {
@@ -62,6 +66,20 @@ public class TimeWeatherCommand {
         }
         
         ctx.getSource().sendSuccess(() -> Component.literal("§aClima despejado."), true);
+        return 1;
+    }
+    
+    private static int setRain(CommandContext<CommandSourceStack> ctx) {
+        if (!cmdopConfig.ENABLE_TIME_WEATHER.get()) {
+            ctx.getSource().sendFailure(Component.literal("§cEl comando /rain está deshabilitado."));
+            return 0;
+        }
+        
+        for (ServerLevel level : ctx.getSource().getServer().getAllLevels()) {
+            level.setWeatherParameters(0, 6000, true, false);
+        }
+        
+        ctx.getSource().sendSuccess(() -> Component.literal("§aClima cambiado a lluvia."), true);
         return 1;
     }
 }

@@ -1,5 +1,6 @@
 package nadiendev.cmdop.commands;
 
+import nadiendev.cmdop.commands.init.CommandProperties;
 import nadiendev.cmdop.config.cmdopConfig;
 import nadiendev.cmdop.data.PlayerDataManager;
 import com.mojang.brigadier.CommandDispatcher;
@@ -11,9 +12,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 public class FlyCommand {
+    
+    private static final CommandProperties PROPERTIES = CommandProperties.create("fly", 2);
+    
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("fly")
-            .requires(source -> source.hasPermission(2))
+        dispatcher.register(Commands.literal(PROPERTIES.literal())
+            .requires(source -> source.hasPermission(PROPERTIES.defaultRequiredLevel()))
             .executes(FlyCommand::toggleSelf)
             .then(Commands.argument("player", EntityArgument.player())
                 .executes(FlyCommand::toggleOther)));

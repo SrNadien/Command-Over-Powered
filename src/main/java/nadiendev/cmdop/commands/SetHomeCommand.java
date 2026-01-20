@@ -40,6 +40,10 @@ public class SetHomeCommand {
         String dimension = player.level().dimension().location().toString();
         
         data.addHome(name, pos, dimension);
+        
+        // GUARDAR AUTOMÁTICAMENTE
+        PlayerDataManager.savePlayerData(player.getUUID());
+        
         player.sendSystemMessage(Component.literal("§aHogar '" + name + "' establecido."));
         
         return 1;

@@ -52,6 +52,10 @@ public class DelHomeCommand {
         }
         
         data.removeHome(name);
+        
+        // GUARDAR AUTOMÁTICAMENTE
+        PlayerDataManager.savePlayerData(player.getUUID());
+        
         player.sendSystemMessage(Component.literal("§aHogar '" + name + "' eliminado."));
         
         return 1;

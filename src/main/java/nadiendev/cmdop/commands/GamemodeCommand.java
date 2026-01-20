@@ -13,6 +13,7 @@ import net.minecraft.world.level.GameType;
 
 public class GamemodeCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        // Comando principal /gm con números
         dispatcher.register(Commands.literal("gm")
             .requires(source -> source.hasPermission(2))
             .then(Commands.argument("mode", IntegerArgumentType.integer(0, 3))
@@ -20,11 +21,39 @@ public class GamemodeCommand {
                 .then(Commands.argument("player", EntityArgument.player())
                     .executes(ctx -> changeGamemode(ctx, IntegerArgumentType.getInteger(ctx, "mode"), 
                         EntityArgument.getPlayer(ctx, "player"))))));
+        
+        // /gmc - Cambiar a modo creativo
+        dispatcher.register(Commands.literal("gmc")
+            .requires(source -> source.hasPermission(2))
+            .executes(ctx -> changeGamemode(ctx, 1, null))
+            .then(Commands.argument("player", EntityArgument.player())
+                .executes(ctx -> changeGamemode(ctx, 1, EntityArgument.getPlayer(ctx, "player")))));
+        
+        // /gms - Cambiar a modo supervivencia
+        dispatcher.register(Commands.literal("gms")
+            .requires(source -> source.hasPermission(2))
+            .executes(ctx -> changeGamemode(ctx, 0, null))
+            .then(Commands.argument("player", EntityArgument.player())
+                .executes(ctx -> changeGamemode(ctx, 0, EntityArgument.getPlayer(ctx, "player")))));
+        
+        // /gma - Cambiar a modo aventura
+        dispatcher.register(Commands.literal("gma")
+            .requires(source -> source.hasPermission(2))
+            .executes(ctx -> changeGamemode(ctx, 2, null))
+            .then(Commands.argument("player", EntityArgument.player())
+                .executes(ctx -> changeGamemode(ctx, 2, EntityArgument.getPlayer(ctx, "player")))));
+        
+        // /gmsp - Cambiar a modo espectador
+        dispatcher.register(Commands.literal("gmsp")
+            .requires(source -> source.hasPermission(2))
+            .executes(ctx -> changeGamemode(ctx, 3, null))
+            .then(Commands.argument("player", EntityArgument.player())
+                .executes(ctx -> changeGamemode(ctx, 3, EntityArgument.getPlayer(ctx, "player")))));
     }
     
     private static int changeGamemode(CommandContext<CommandSourceStack> ctx, int mode, ServerPlayer target) {
         if (!cmdopConfig.ENABLE_GAMEMODE.get()) {
-            ctx.getSource().sendFailure(Component.literal("§cEl comando /gm está deshabilitado."));
+            ctx.getSource().sendFailure(Component.literal("§cEl comando de gamemode está deshabilitado."));
             return 0;
         }
         

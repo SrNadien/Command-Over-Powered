@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8.5",
+  "package": "nadiendev.cmdop.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "cmdop.refmap.json",
+  "mixins": [
+    "PlayerListMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

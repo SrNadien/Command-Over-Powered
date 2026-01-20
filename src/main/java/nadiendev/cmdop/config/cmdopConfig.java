@@ -22,6 +22,8 @@ public class cmdopConfig {
     public static final ModConfigSpec.BooleanValue ENABLE_TPS;
     public static final ModConfigSpec.BooleanValue ENABLE_TIME_WEATHER;
     public static final ModConfigSpec.BooleanValue ENABLE_AFK;
+    public static final ModConfigSpec.BooleanValue AUTO_AFK_ENABLED;
+    public static final ModConfigSpec.IntValue AUTO_AFK_TIME;
     public static final ModConfigSpec.BooleanValue ENABLE_WORKBENCH;
     public static final ModConfigSpec.BooleanValue ENABLE_SIZE;
     public static final ModConfigSpec.IntValue SIZE_MAX_SCALE;
@@ -29,6 +31,7 @@ public class cmdopConfig {
     public static final ModConfigSpec.BooleanValue ENABLE_HEAL;
     public static final ModConfigSpec.BooleanValue ENABLE_FEED;
     public static final ModConfigSpec.BooleanValue ENABLE_SUDO;
+    public static final ModConfigSpec.BooleanValue ENABLE_REPAIR;  
     public static final ModConfigSpec.ConfigValue<String> CHAT_FORMAT;
     public static final ModConfigSpec.ConfigValue<String> SAY_FORMAT;
     
@@ -55,12 +58,22 @@ public class cmdopConfig {
         ENABLE_HEAL = builder.define("enableHeal", true);
         ENABLE_FEED = builder.define("enableFeed", true);
         ENABLE_SUDO = builder.define("enableSudo", true);
+        ENABLE_REPAIR = builder.define("enableRepair", true);  
         builder.pop();
         
         builder.comment("Home settings").push("home");
         ENABLE_HOME = builder.define("enableHome", true);
         HOME_COOLDOWN = builder.defineInRange("homeCooldown", 0, 0, 3600);
         MAX_HOMES = builder.defineInRange("maxHomes", 5, 1, 100);
+        builder.pop();
+        
+        builder.comment("AFK settings").push("afk");
+        AUTO_AFK_ENABLED = builder
+            .comment("Enable automatic AFK detection")
+            .define("autoAfkEnabled", true);
+        AUTO_AFK_TIME = builder
+            .comment("Time in seconds of inactivity before marking as AFK (default: 300 = 5 minutes)")
+            .defineInRange("autoAfkTime", 300, 60, 3600);
         builder.pop();
         
         builder.comment("Size command settings").push("size");
